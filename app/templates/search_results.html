@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="#">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/search_form.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+    <title>Get Coordinates Flask App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+ 
+            /* color: #00B4CC; */
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            /*text-align: center; */
+            background-color: #f2f2f2;
+            /* margin-top: 100px; */
+        }
+/* 
+        h3 {
+            font-size: 2em;
+            font-family: 'Signika', sans-serif;
+            display: inline-block
+        } */
+
+        /* .container {
+            margin: 1em;
+        } */
+
+        h4{
+            color: #00B4CC;
+        }
+
+        .top,
+        .left,
+        .right {
+            background-color: #b3acac;
+            border: 3px solid #888888;
+            overflow: hidden;
+        }
+
+        .top {
+            width: calc(100% - 6px);
+            min-height: 200px;
+        }
+
+        .left {
+            width: calc(60% - (.5em + 6px));
+            float: left;
+            min-height: 400px;
+            margin-top: 1em;
+        }
+
+        .right {
+            width: calc(40% - (.5em + 6px));
+            float: right;
+            min-height: 300px;
+            margin-top: 1em;
+        }
+
+        #map_img {
+            position: relative;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        #logo {
+            height: 150px;
+            width: 360px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        #logo img {
+            width: 100%
+        }
+
+        * {
+            outline: none;
+        }
+
+
+
+        .tb {
+            display: table;
+            width: 100%;
+        }
+
+        .td {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        input,
+        button {
+            color: #fff;
+            /* font-family: Nunito; */
+            padding: 0;
+            margin: 0;
+            border: 0;
+            background-color: transparent;
+        }
+
+        #cover {
+            position: relative;
+            left: 25px;
+            width: 550px;
+            padding: 12px;
+            background-color: #00B4CC;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px #00B4CC, 0 0 0 6px #ffffffeb;
+        }
+
+        form {
+            height: 30px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            height: 30px;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        input[type="text"]::placeholder {
+            color: #ccf0f4;
+        }
+
+        #s-cover {
+            width: 1px;
+            padding-left: 35px;
+        }
+
+        button {
+            position: relative;
+            display: block;
+            width: 40px;
+            height: 50px;
+            cursor: pointer;
+        }
+
+        #s-circle {
+            position: relative;
+            top: -11px;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            margin-top: 0;
+            border-width: 5px;
+            border: 6px solid #fff;
+            background-color: transparent;
+            border-radius: 50%;
+            transition: 0.5s ease all;
+        }
+
+        button span {
+            position: absolute;
+            top: 25px;
+            left: 16px;
+            display: block;
+            width: 16px;
+            height: 6px;
+            background-color: transparent;
+            border-radius: 5px;
+            transform: rotateZ(52deg);
+            transition: 0.5s ease all;
+        }
+
+        button span:before,
+        button span:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 16px;
+            height: 5px;
+            background-color: #fff;
+            border-radius: 5px;
+            transform: rotateZ(0);
+            transition: 0.5s ease all;
+        }
+
+        #s-cover:hover #s-circle {
+            top: -6px;
+            width: 25px;
+            height: 6px;
+            border-width: 0;
+            background-color: #fff;
+            border-radius: 20px;
+        }
+
+        #s-cover:hover span {
+            top: 50%;
+            left: 5px;
+            width: 20px;
+            margin-top: -4px;
+            transform: rotateZ(0);
+        }
+
+        #s-cover:hover button span:before {
+            bottom: 13px;
+            transform: rotateZ(52deg);
+        }
+
+        #s-cover:hover button span:after {
+            bottom: -2px;
+            transform: rotateZ(-52deg);
+        }
+
+        #s-cover:hover button span:before,
+        #s-cover:hover button span:after {
+            right: -2px;
+            top: 10;
+            width: 20px;
+            background-color: #fff;
+        }
+
+        #ytd-url {
+            display: block;
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            padding: 10px 14px;
+            margin: 20px;
+            color: #fff;
+            /* font-family: Nunito; */
+            font-size: 14px;
+            text-decoration: none;
+            background-color: #00B4CC;
+            border-radius: 4px;
+            box-shadow: 0 10px 20px -5px rgba(0, 180, 204, 0.86);
+            z-index: 125;
+        }
+
+        .no-js #loader {
+            display: none;
+        }
+
+        .js #loader {
+            display: block;
+            position: absolute;
+            left: 100px;
+            top: 0;
+        }
+
+        .se-pre-con {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url(https://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif) center no-repeat #fff;
+        }
+
+
+
+        .search-result-categories>li>a {
+            color: #b6b6b6;
+            font-weight: 400
+        }
+
+        .search-result-categories>li>a:hover {
+            background-color: #ddd;
+            color: #555
+        }
+
+        .search-result-categories>li>a>.glyphicon {
+            margin-right: 5px
+        }
+
+        .search-result-categories>li>a>.badge {
+            float: right
+        }
+
+        .search-results-count {
+            margin-top: 10px
+        }
+
+        .search-result-item {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 4px;
+            height: 100%;
+        }
+
+        .search-result-item:after,
+        .search-result-item:before {
+            content: " ";
+            display: table
+        }
+
+        .search-result-item:after {
+            clear: both
+        }
+
+        .search-result-item .image-link {
+            display: block;
+            overflow: hidden;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px
+        }
+
+        @media (min-width:768px) {
+            .search-result-item .image-link {
+                display: inline-block;
+                margin: -20px 0 -20px -20px;
+                float: left;
+                width: 200px
+            }
+        }
+
+        @media (max-width:767px) {
+            .search-result-item .image-link {
+                max-height: 200px
+            }
+        }
+
+        .search-result-item .image {
+            max-width: 100%
+        }
+
+        .search-result-item .info {
+            margin-top: 2px;
+            font-size: 12px;
+            color: #999
+        }
+
+        .search-result-item .description {
+            font-size: 13px
+        }
+
+        .search-result-item+.search-result-item {
+            margin-top: 20px
+        }
+/* 
+        @media (min-width:768px) {
+            .search-result-item-body {
+                margin-left: 200px
+            }
+        } */
+
+        .search-result-item-heading {
+            font-weight: 300
+        }
+
+        .search-result-item-heading>a {
+            color: #555
+        }
+
+        @media (min-width:768px) {
+            .search-result-item-heading {
+                margin: 0
+            }
+        }
+
+        a.button3 {
+            display: inline-block;
+            padding: 0.3em 1.2em;
+            margin: 0 0.3em 0.3em 0;
+            border-radius: 2em;
+            box-sizing: border-box;
+            text-decoration: none;
+            /* font-family: 'Roboto', sans-serif; */
+            font-weight: 300;
+            color: #FFFFFF;
+            background-color: #00B4CC;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        a.button3:hover {
+            background-color: #79cfdb;
+            font-weight: bolder;
+            
+        }
+
+        .topnav {
+            background-color: #888888;
+            overflow: hidden;
+        }
+
+        /* Style the links inside the navigation bar */
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        /* Change the color of links on hover */
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        /* Add a color to the active/current link */
+        .topnav a.active {
+            background-color: #00B4CC;
+            color: white;
+        }
+        a.button4 {
+            display: inline-block;
+            padding: 0.3em 1.2em;
+            border-radius: 2em;
+            box-sizing: border-box;
+            text-decoration: none;
+            /* font-family: 'Roboto', sans-serif; */
+            font-weight: 300;
+            color: #FFFFFF;
+            background-color: #00B4CC;
+            text-align: center;
+            transition: all 0.2s;
+            cursor:pointer;
+        }
+
+        a.button4:hover {
+            background-color: #79cfdb;
+            font-weight: bolder;
+        }
+
+        table {text-align: left;}
+        table thead th {text-align: left;}
+
+        #topButton {
+            display: none;
+            width: 150px;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: #ff896c;
+            color: white;
+            cursor: pointer;            
+            border-radius: 4px;
+            width: fit-content;
+        }
+
+        #topButton:hover {
+            background-color: #00B4CC;
+        }
+
+        .newloader-wrapper {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              background-color: #242f3f;
+              display:flex;
+              justify-content: center;
+              align-items: center;
+            }
+        .newloader {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          position: relative;                      /******** <- Remove this line *********/
+          border: 4px solid #Fff;
+          animation: loader 2s infinite ease;
+            }
+        .newloader-inner{
+            vertical-align: top;
+            display: inline-block;
+            width:100%;
+            background-color: #fff;
+            animation: loader 2s infinite ease;
+        }
+        
+
+    </style>
+
+
+    <!-- D3.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"  charset="utf-8"></script>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!--Angular js-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+
+    <script>
+        //load screen while page loads
+        $(window).on("load",function(){
+            $(".newloader-wrapper").fadeOut("slow");
+            $("#comparisonTitle").hide();
+        });
+
+
+        $(window).scroll(function() {
+            console.log("in scroll");
+            if ($(this).scrollTop() > 20) {
+                $("#topButton").css('display', 'block');
+            } else {
+                $("#topButton").css('display', 'none');
+            }
+        });
+
+
+        // wait for html to load, then plot initial overview map
+        angular.element(document).ready(function () {
+            var fig = {{ fig0 | safe }};            
+            Plotly.plot("mymap", fig.data, fig.layout, {displayModeBar: false} || {}), { responsive: true };
+            });
+
+        // pass this function an integer to update the map
+        // 0=original overview, 1=1st ranked zoom, 2=2nd ranked zoom, 3=3rd ranked zoom
+        function updatePlot(n) {
+
+           var mapTitleText = "";
+           
+           // Toggling visibility of the comparison section header
+           if(n==0){
+            $("#comparisonTitle").hide();
+           }else{
+              $("#comparisonTitle").show();
+           }
+            
+            if (n === 0) { 
+                var fig = {{ fig0 | safe }};
+                fig.layout.mapbox.zoom = 2;
+                fig.layout.mapbox.center.lat = 38;
+                fig.layout.mapbox.center.lon = -94;         
+                var t = "t0";    
+                mapTitleText = "Suggested neighborhood(s)";           
+            };
+            
+            if (n === 1) {
+                var fig = {{ fig0 | safe }};
+                fig.layout.mapbox.zoom = 10;
+                fig.layout.mapbox.center.lat = {{ c1lat | safe }};
+                fig.layout.mapbox.center.lon = {{ c1lon | safe }};           
+                var t = "t1";
+                mapTitleText = "Showing details for {{ name1 | safe }}";
+            };
+            
+            if (n === 2) {
+                var fig = {{ fig0 | safe }};
+                fig.layout.mapbox.zoom = 10;
+                fig.layout.mapbox.center.lat = {{ c2lat | safe }};
+                fig.layout.mapbox.center.lon = {{ c2lon | safe }};              
+                var t = "t2";
+                mapTitleText = "Showing details for {{ name2 | safe }}";
+            };
+            
+            if (n === 3) {
+                var fig = {{ fig0 | safe }};
+                fig.layout.mapbox.zoom = 10; 
+                fig.layout.mapbox.center.lat = {{ c3lat | safe }};
+                fig.layout.mapbox.center.lon = {{ c3lon | safe }};               
+                var t = "t3";
+                mapTitleText = "Showing details for {{ name3 | safe }}";
+            };
+
+                   
+            Plotly.newPlot("mymap", fig.data, fig.layout, {displayModeBar: false} || {});
+
+            // Call to render comparison table
+            drawComparisonTable(n);
+            //Update map title
+            $("#mapTitle").text(mapTitleText);
+        };
+
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+        
+    </script>
+</head>
+
+
+
+<body>
+    <!--Add top toolbar with two tabs: Results and Team-->
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="home" >
+            <img src="/static/relo_logo_slogan_min2.png" alt="">
+        </a>
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link active" href="search_results" style="color:#00B4CC;">Results</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="about" style="color:#00B4CC;">Team</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!--Create container for search results-->
+    <div class="container-fluid">
+        <div class="row" style="padding:15px;">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">                
+                <form role="form" id="form-buscar" action="search_results" method="POST">
+                    <div class="form-group">
+                        <div class="input-group search-box">
+                            <!--Add search bar so the user can search for another result-->
+                            <input id="1" class="form-control" type="text" name="address" placeholder="Enter address here..."
+                                required value="{{ address | safe}}"/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="submit" style="background-color: #00b4cc;background-image: url('/static/magnifying-glass.png');background-position: center; background-repeat: no-repeat;">  
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3"></div>
+        <!--Begin to display the results from a search-->
+        </div>
+        <div width="100%" style="text-align:center;color:darkgray;">
+            Select each suggested neighborhood below to see how it compares
+        </div>
+        <div class="row" style="padding:15px;">
+                         <div class="col-md-4">
+                <div class="search-result-item">
+                    <div class="search-result-item-body">
+                        <div class="row">
+                            <div class="col-sm-4 text-align-center">
+                                <p class="value3 mt-sm"  style="text-align: center;">
+                                    <img src="static/rank-1.png" width="30%">
+                                </p>
+                                <!--View Details button zooms the Plotly graph to show a search result location as well as the surrounding amenities-->
+                                <p class="fs-mini text-muted" style="text-align: center;"><a class="button3" onclick=updatePlot(1);
+                                        style="cursor:pointer">View Details</a></p>
+                            </div>
+                            <div class="col-sm-8">
+                                <!--Populate the remainder of the search result cards-->
+                                <h4 class="search-result-item-heading"><a href="#">{{ name1 | safe }}</a></h4>
+                                <p class="info">{{ subname1 | safe }}</p>
+                                <p class="description">Latitude/Longitude<br>{{ c1 | safe }}</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="search-result-item">
+                    <div class="search-result-item-body">
+                        <div class="row">
+                            <div class="col-sm-4 text-align-center">
+                                <p class="value3 mt-sm"  style="text-align: center;">
+                                    <img src="static/rank-2.png" width="30%">
+                                </p>
+                                <!--View Details button zooms the Plotly graph to show a search result location as well as the surrounding amenities-->
+                                <p class="fs-mini text-muted"  style="text-align: center;"><a class="button3" onclick=updatePlot(2);
+                                    style="cursor:pointer">View Details</a></p>
+                            </div>
+                            <div class="col-sm-8">
+                                <!--Populate the remainder of the search result cards-->
+                                <h4 class="search-result-item-heading"><a href="#">{{ name2 | safe }}</a> <span
+                                        class="badge bg-danger fw-normal pull-right"></span></h4>
+                                <p class="info">{{ subname2 | safe }}</p>
+                                <p class="description">Latitude/Longitude<br>{{ c2 | safe }}</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="search-result-item">
+                    <div class="search-result-item-body">
+                        <div class="row">
+                            <div class="col-sm-4 text-align-center">
+                                <p class="value3 mt-sm" style="text-align: center;">
+                                    <img src="static/rank-3.png" width="30%">
+                                </p>
+                                <!--View Details button zooms the Plotly graph to show a search result location as well as the surrounding amenities-->
+                                <p class="fs-mini text-muted"  style="text-align: center;">
+                                    <a class="button3" onclick=updatePlot(3);
+                                    style="cursor:pointer">View Details</a></p>
+                            </div>
+                            <div class="col-sm-8">
+                                <!--Populate the remainder of the search result cards-->
+                                <h4 class="search-result-item-heading"><a href="#">{{ name3 | safe }}</a></h4>
+                                <p class="info">{{ subname3 | safe }}</p>
+                                <p class="description">Latitude/Longitude<br>{{ c3 | safe }}</p>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row" style="padding:15px;">
+            <div class="col-md-2"></div>
+            <div class="col-md-8" style="text-align: center;">
+                <h4 id="mapTitle">Suggested neighborhood(s)</h4>      
+                <div id="mymap"></div>
+                <a class="button4" style="margin-top: 10px;" onclick=updatePlot(0);>Reset Map</a>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row" style="padding:15px;">
+            <div class="col-md-2"></div>
+            <div class="col-md-8" style="text-align: center;"> 
+                <h4 id="comparisonTitle">How this neighborhood compares to yours</h4>
+                <!-- <i>Select "View in Map" for each match to see a comparison.</i> -->
+                <br><br>
+                <div class="row ng-scope" style="margin-top: -10px;">
+                    <div id="d3div" style="width:100%;"></div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        </div>
+
+        <button onclick="topFunction()" id="topButton" title="Go back to top">Back to Top</button>
+
+<script>
+
+    function drawComparisonTable(n){
+
+    console.log("drawing table - "+ n)
+
+    var flaskData = [];
+    flaskData[0] = {{ t0 | safe}};
+    flaskData[1] = {{ t1 | safe}};
+    flaskData[2] = {{ t2 | safe}};
+    flaskData[3] = {{ t3 | safe}};
+
+    var data = [];
+
+    var fieldRefs = ['','Top 1st Match','Top 2nd Match','Top 3rd Match'];
+    var targetFieldRef = fieldRefs[n];    
+    
+
+    var data = d3.values(flaskData[n]).slice(6,21);    
+
+    d3.select("#d3div").select("table").remove();
+    d3.select("#d3div").select("div").remove();
+    
+    // Stop populating comparison table
+    if(n==0)
+     return;
+
+    var legend = d3.select("#d3div")
+                .append("div")
+                .append("svg")
+                .attr("height","50px")
+                .attr("width","500px");
+    
+    legend.append("rect")
+    .attr("height",15)
+    .attr("width",15)
+    .attr("x",15)
+    .attr("y",15)
+    .style("fill","#79cfdb");
+
+    legend.append("text")
+    .attr("x", 40)
+    .attr("y",27)
+    .attr("fill","#000")
+    .style("font-size","0.8em")
+    .text("Current location");
+
+    legend.append("rect")
+    .attr("height",15)
+    .attr("width",15)
+    .attr("x",165)
+    .attr("y",15)
+    .style("fill","#006e7d");
+
+    legend.append("text")
+    .attr("x", 190)
+    .attr("y",27)
+    .attr("fill","#000")
+    .style("font-size","0.8em")
+    .text("Suggested location");
+
+    legend.append("circle")
+    .attr("r",8)
+    .attr("cx",335)
+    .attr("cy",23)
+    .style("fill","#00363d");
+
+    legend.append("text")
+    .attr("x", 350)
+    .attr("y",27)
+    .attr("fill","#000")
+    .style("font-size","0.8em")
+    .text("Match %");
+
+    
+    // Building the comparison table
+    var table = d3.select("#d3div").append("table").attr("style","margin: 0 auto");
+
+    var tr = table.selectAll("tr")
+    .data(data)
+    .enter()
+    .append("tr");
+
+    var td1 = tr.append("td")
+            .text(function(d) { return d.Feature })
+            .style("text-align","right");
+
+    var td2 = tr.append("td");
+
+    var svg = td2.append("svg")
+                .attr("height","60px")
+                .attr("width","500px");
+
+    
+    // current location measure
+    svg.append("rect")
+    .attr("height", 20)
+    .attr("width", function(d){
+            var max = Math.max(d['Searched Neighborhood'],d[targetFieldRef]);
+            return (d['Searched Neighborhood']*300/max)+"px";
+        })
+    .attr("x",50)
+    .attr("y",10)
+    .style("fill","#79cfdb");
+
+    // label for current location measure
+    svg.append("text")
+    .attr("x", function(d){
+            var max = Math.max(d['Searched Neighborhood'],d[targetFieldRef]);
+            return (d['Searched Neighborhood']*300/max) + 55;
+        })
+    .attr("y",25)
+    .attr("fill","#000")
+    .style("font-size","0.8em")
+    .text(function(d){return Math.round((d['Searched Neighborhood'] + Number.EPSILON) * 100) / 100});
+
+    // target location measure
+    svg.append("rect").
+    attr("height", 20)
+    .attr("width", function(d){
+            var max = Math.max(d['Searched Neighborhood'],d[targetFieldRef]);
+            console.log("max "+max);
+            return (d[targetFieldRef]*300/max)+"px";
+        })
+    .attr("x",50)
+    .attr("y",30)    
+    .style("fill","#006e7d");
+
+    // label for target location measure
+    svg.append("text")
+    .attr("x", function(d){
+            var max = Math.max(d['Searched Neighborhood'],d[targetFieldRef]);
+            return (d[targetFieldRef]*300/max) + 55;
+        })
+    .attr("y",45)
+    .attr("fill","#000")
+    .style("font-size","0.8em")
+    .text(function(d){return Math.round((d[targetFieldRef] + Number.EPSILON) * 100) / 100});
+    
+
+
+    // diff %
+    svg.append("circle")
+    .attr("r",function(d){
+            return Math.max(30*((100 - Math.abs(d['Percent Change']))/100),20)
+        })
+    .attr("cx",50)
+    .attr("cy",30)
+    .style("fill","#00363d");
+
+    // label for diff %
+    svg.append("text")
+    .attr("fill", function(d){
+        return (d['Percent Change'] >= 0 ? "#80e997" : "#ffc48c")
+    })
+    .attr("x",35)
+    .attr("dy",30)
+    .style("font-size","0.8em")
+    .text(function(d){
+        return (100-Math.abs(d['Percent Change']))+"%"
+        }); 
+
+    // static label 'match'
+    svg.append("text")
+    .attr("fill", function(d){
+        return (d['Percent Change'] >= 0 ? "#80e997" : "#ffc48c")
+    })
+    .attr("x",35)
+    .attr("dy",42)
+    .style("font-size","0.5em")
+    .text("Match");  
+    
+
+    }
+
+    //drawComparisonTable();
+
+</script>
+  
+</body>
+
+</html>

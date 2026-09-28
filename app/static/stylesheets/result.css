@@ -1,0 +1,236 @@
+body {
+    background-color: #f1eaea;
+    color: #333333;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 2em;
+  }
+  
+  .container {
+    margin: 1em;
+  }
+  
+  .top,
+  .left,
+  .right {
+    background-color: #66d9ff;
+    border: 3px solid #888888;
+    overflow: hidden;
+  }
+  
+  .top {
+    width: 100%;
+    min-height: 200px;
+  }
+  
+  .left {
+    width: 60%;
+    float: left;
+    min-height: 400px;
+    margin-top: 1em;
+  }
+  
+  .right {
+    width: 40%;
+    float: right;
+    min-height: 400px;
+    margin-top: 1em;
+  }
+
+#map_img {
+    position: relative;
+}
+
+img {
+    display: block;
+    object-fit: cover;
+}
+
+#logo {
+    height: 150px;
+    width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    object-fit: cover;
+}
+
+* {
+    outline: none;
+}
+
+
+
+.tb {
+    display: table;
+    width: 100%;
+}
+
+.td {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+input,
+button {
+    color: #fff;
+    font-family: Nunito;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background-color: transparent;
+}
+
+#cover {
+    position: relative;
+    left: 25px;
+    width: 500px;
+    padding: 12px;
+    background-color: #00B4CC;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px #00B4CC, 0 0 0 6px #ffffffeb;
+}
+
+form {
+    height: 30px;
+}
+
+input[type="text"] {
+    width: 100%;
+    height: 30px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+input[type="text"]::placeholder {
+    color: #ccf0f4;
+}
+
+#s-cover {
+    width: 1px;
+    padding-left: 35px;
+}
+
+button {
+    position: relative;
+    display: block;
+    width: 40px;
+    height: 50px;
+    cursor: pointer;
+}
+
+#s-circle {
+    position: relative;
+    top: -11px;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    margin-top: 0;
+    border-width: 5px;
+    border: 5px solid #fff;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: 0.5s ease all;
+}
+
+button span {
+    position: absolute;
+    top: 25px;
+    left: 16px;
+    display: block;
+    width: 16px;
+    height: 6px;
+    background-color: transparent;
+    border-radius: 5px;
+    transform: rotateZ(52deg);
+    transition: 0.5s ease all;
+}
+
+button span:before,
+button span:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+    transform: rotateZ(0);
+    transition: 0.5s ease all;
+}
+
+#s-cover:hover #s-circle {
+    top: -4px;
+    width: 20px;
+    height: 6px;
+    border-width: 0;
+    background-color: #000000;
+    border-radius: 20px;
+}
+
+#s-cover:hover span {
+    top: 50%;
+    left: 5px;
+    width: 20px;
+    margin-top: -4px;
+    transform: rotateZ(0);
+}
+
+#s-cover:hover button span:before {
+    bottom: 7px;
+    transform: rotateZ(52deg);
+}
+
+#s-cover:hover button span:after {
+    bottom: -7px;
+    transform: rotateZ(-52deg);
+}
+
+#s-cover:hover button span:before,
+#s-cover:hover button span:after {
+    right: -2px;
+    width: 15px;
+    background-color: #fff;
+}
+
+#ytd-url {
+    display: block;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    padding: 10px 14px;
+    margin: 20px;
+    color: #fff;
+    font-family: Nunito;
+    font-size: 14px;
+    text-decoration: none;
+    background-color: #00B4CC;
+    border-radius: 4px;
+    box-shadow: 0 10px 20px -5px rgba(0, 180, 204, 0.86);
+    z-index: 125;
+}
+
+.no-js #loader {
+    display: none;
+}
+
+.js #loader {
+    display: block;
+    position: absolute;
+    left: 100px;
+    top: 0;
+}
+
+.se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url(https://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif) center no-repeat #fff;
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/index_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/search_form.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+    <title>RELO - Relocation Made Easy</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <style>
+        /* .topnav {
+            background-color: #888888;
+            overflow: hidden;
+        } */
+        /* Style the links inside the navigation bar */
+        /* .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        } */
+        /* Change the color of links on hover */
+        /* .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        } */
+        /* Add a color to the active/current link */
+        /* .topnav a.active {
+            background-color: #00B4CC;
+            color: white;
+        } */
+        /*.no-js #loader {
+            display: none;
+        }
+        .js #loader {
+            display: block;
+            position: absolute;
+            left: 100px;
+            top: 0;
+        }
+        .se-pre-con {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url(https://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif) center no-repeat #fff;
+        }*/
+        a {
+            color: #00B4CC;
+        }
+        .newloader-wrapper {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              background-color: #242f3f;
+              display:flex;
+              justify-content: center;
+              align-items: center;
+            }
+        .newloader {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          position: relative;                      /******** <- Remove this line *********/
+          border: 4px solid #Fff;
+          animation: loader 2s infinite ease;
+            }
+        .newloader-inner{
+            vertical-align: top;
+            display: inline-block;
+            width:100%;
+            background-color: #fff;
+            animation: loader 2s infinite ease;
+        }
+    </style>
+</head>
+
+<script>
+    //show load screen while the window is loading
+    $(window).on("load",function(){
+        $(".newloader-wrapper").fadeOut("slow");
+    });
+
+    //show load screen after user searches an address
+    $("#clickedSubmit").click(function(){
+        $(".newloader-wrapper").show();
+    });
+</script>
+
+<body>
+    <!--div to show load screen-->
+    <div class="newloader-wrapper">
+        <span class="newloader"><span class="newloader-inner"></span></span>
+    </div>
+    <!-- <div class="topnav">
+        <a class="active" href="#home">Home</a>
+        <a href="results">Results</a>
+        <a href="contact">Contact</a>
+        <a href="about">About</a>
+    </div> -->
+
+    <!--show toolbar on top of page with two tabs: Results and Team-->
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="/static/relo_logo_slogan_min2.png" alt="">
+        </a>
+        <ul class="nav justify-content-end">
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+
+                <!-- <div style="text-align: center;" id="logo">
+                <img src="static/relo_logo_slogan.png">
+                </div> -->
+                <!--<img src="https://media.architecturaldigest.com/photos/5da74823d599ec0008227ea8/16:9/w_2560%2Cc_limit/GettyImages-946087016.jpg" alt="city">-->
+                
+                <form role="form" id="form-buscar" action="search_results" method="POST">
+                    <div class="form-group">
+                        <div class="input-group search-box">
+                            <input id="1" class="form-control" type="text" name="address" placeholder="Enter address here..."
+                                required />
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="submit" id = "clickedSubmit" style="background-color: #00b4cc;background-image: url('/static/magnifying-glass.png');background-position: center; background-repeat: no-repeat;">  
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+
+
+                <!--<div class="se-pre-con"></div>-->
+                <div class="show-data"></div>
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+    </div>
+</body>
+
+
+
+</html>
